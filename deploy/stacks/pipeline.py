@@ -181,6 +181,11 @@ class PipelineStack(Stack):
         for policy in self.codebuild_policy:
             self.pipeline_iam_role.add_to_policy(policy)
 
+        self.input=CodePipelineSource.git_hub(
+            repo_string="louishourcade/aws-dataall",
+            branch=self.git_branch
+        )
+
         self.pipeline = pipelines.CodePipeline(
             self,
             f'{self.resource_prefix}-{self.git_branch}-cdkpipeline',
@@ -188,12 +193,13 @@ class PipelineStack(Stack):
             publish_assets_in_parallel=False,
             synth=pipelines.CodeBuildStep(
                 'Synth',
-                input=CodePipelineSource.code_commit(
-                    repository=codecommit.Repository.from_repository_name(
-                        self, 'sourcerepo', repository_name='dataall'
-                    ),
-                    branch=self.git_branch,
-                ),
+                input=self.input,
+                # input=CodePipelineSource.code_commit(
+                #     repository=codecommit.Repository.from_repository_name(
+                #         self, 'sourcerepo', repository_name='dataall'
+                #     ),
+                #     branch=self.git_branch,
+                # ),
                 build_environment=codebuild.BuildEnvironment(
                     build_image=codebuild.LinuxBuildImage.AMAZON_LINUX_2_3,
                 ),
