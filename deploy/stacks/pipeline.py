@@ -194,12 +194,6 @@ class PipelineStack(Stack):
             synth=pipelines.CodeBuildStep(
                 'Synth',
                 input=self.input,
-                # input=CodePipelineSource.code_commit(
-                #     repository=codecommit.Repository.from_repository_name(
-                #         self, 'sourcerepo', repository_name='dataall'
-                #     ),
-                #     branch=self.git_branch,
-                # ),
                 build_environment=codebuild.BuildEnvironment(
                     build_image=codebuild.LinuxBuildImage.AMAZON_LINUX_2_3,
                 ),
