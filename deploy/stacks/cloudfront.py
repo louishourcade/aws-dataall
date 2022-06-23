@@ -1,6 +1,6 @@
 import hashlib
 import os
-import jsii
+
 from aws_cdk import (
     aws_ssm as ssm,
     aws_s3 as s3,
@@ -20,16 +20,6 @@ from aws_cdk import (
 from .pyNestedStack import pyNestedClass
 from .solution_bundling import SolutionBundling
 
-@jsii.implements(wafv2.CfnRuleGroup.IPSetReferenceStatementProperty)
-class IPSetReferenceStatement:
-    @property
-    def arn(self):
-        return self._arn
-
-    @arn.setter
-    def arn(self, value):
-        self._arn = value
-
 class CloudfrontDistro(pyNestedClass):
     def __init__(
         self,
@@ -46,6 +36,7 @@ class CloudfrontDistro(pyNestedClass):
         super().__init__(scope, id, **kwargs)
 
         # Create IP set if IP filtering enabled
+        ip_set_cloudfront=None
         if custom_waf_rules and custom_waf_rules.get("allowed_ip_list"):
             ip_set_cloudfront = wafv2.CfnIPSet(
                 self,
@@ -56,8 +47,6 @@ class CloudfrontDistro(pyNestedClass):
                 ip_address_version="IPV4",
                 scope="CLOUDFRONT"
             )
-            ip_set_ref_stmnt = IPSetReferenceStatement()
-            ip_set_ref_stmnt.arn = ip_set_cloudfront.attr_arn
 
         waf_rules = []
         priority = 0
@@ -92,7 +81,7 @@ class CloudfrontDistro(pyNestedClass):
                         statement=wafv2.CfnWebACL.StatementProperty(
                             not_statement=wafv2.CfnWebACL.NotStatementProperty(
                                 statement=wafv2.CfnWebACL.StatementProperty(
-                                    ip_set_reference_statement=ip_set_ref_stmnt
+                                    ip_set_reference_statement=ip_set_cloudfront.get_att(attribute_name="arn")
                                 )
                             )
                         ),

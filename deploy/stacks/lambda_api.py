@@ -1,5 +1,5 @@
 import json
-import jsii
+
 from aws_cdk import (
     aws_iam as iam,
     aws_apigateway as apigw,
@@ -26,16 +26,6 @@ from aws_cdk.aws_ec2 import (
 )
 
 from .pyNestedStack import pyNestedClass
-
-@jsii.implements(wafv2.CfnRuleGroup.IPSetReferenceStatementProperty)
-class IPSetReferenceStatement:
-    @property
-    def arn(self):
-        return self._arn
-
-    @arn.setter
-    def arn(self, value):
-        self._arn = value
 
 class LambdaApiStack(pyNestedClass):
     def __init__(
@@ -302,7 +292,7 @@ class LambdaApiStack(pyNestedClass):
         )
 
         # Create IP set if IP filtering enabled in CDK.json
-        ip_set_ref_stmnt = None
+        ip_set_regional=None
         if custom_waf_rules and custom_waf_rules.get("allowed_ip_list"):
             ip_set_regional = wafv2.CfnIPSet(
                 self,
@@ -313,8 +303,6 @@ class LambdaApiStack(pyNestedClass):
                 ip_address_version="IPV4",
                 scope="REGIONAL"
             )
-            ip_set_ref_stmnt = IPSetReferenceStatement()
-            ip_set_ref_stmnt.arn = ip_set_regional.attr_arn
 
         acl = wafv2.CfnWebACL(
             self,
@@ -326,7 +314,7 @@ class LambdaApiStack(pyNestedClass):
                 metric_name='waf-apigw',
                 sampled_requests_enabled=True,
             ),
-            rules=self.get_waf_rules(envname,custom_waf_rules,ip_set_ref_stmnt),
+            rules=self.get_waf_rules(envname,custom_waf_rules,ip_set_regional),
         )
 
         wafv2.CfnWebACLAssociation(
@@ -607,7 +595,7 @@ class LambdaApiStack(pyNestedClass):
         return api_policy
 
     @staticmethod
-    def get_waf_rules(envname,custom_waf_rules=None,ip_set_ref_stmnt=None):
+    def get_waf_rules(envname,custom_waf_rules=None,ip_set_regional=None):
         waf_rules = []
         priority = 0
         if custom_waf_rules:
@@ -641,7 +629,7 @@ class LambdaApiStack(pyNestedClass):
                         statement=wafv2.CfnWebACL.StatementProperty(
                             not_statement=wafv2.CfnWebACL.NotStatementProperty(
                                 statement=wafv2.CfnWebACL.StatementProperty(
-                                    ip_set_reference_statement=ip_set_ref_stmnt
+                                    ip_set_reference_statement=ip_set_regional.get_att(attribute_name="arn")
                                 )
                             )
                         ),

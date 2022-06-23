@@ -18,7 +18,11 @@
         "internet_facing": true,
         "prod_sizing": false,
         "enable_cw_rum":  true,
-        "enable_cw_canaries": true
+        "enable_cw_canaries": true,
+        "custom_waf_rules": {
+          "allowed_geo_list": ["FR","DE","IE"],
+          "allowed_ip_list": ["54.240.197.236/16"]
+        }
       }
     ]
   }
