@@ -1,5 +1,5 @@
 import json
-
+import jsii
 from aws_cdk import (
     aws_iam as iam,
     aws_apigateway as apigw,
