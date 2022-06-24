@@ -21,7 +21,7 @@
         "enable_cw_canaries": true,
         "custom_waf_rules": {
           "allowed_geo_list": ["FR","DE","IE"],
-          "allowed_ip_list": ["54.240.197.236/16"]
+          "allowed_ip_list": ["54.240.0.0/16","54.240.197.236/32"]
         }
       }
     ]
