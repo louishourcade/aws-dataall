@@ -629,7 +629,9 @@ class LambdaApiStack(pyNestedClass):
                         statement=wafv2.CfnWebACL.StatementProperty(
                             not_statement=wafv2.CfnWebACL.NotStatementProperty(
                                 statement=wafv2.CfnWebACL.StatementProperty(
-                                    ip_set_reference_statement=ip_set_regional.get_att(attribute_name="arn")
+                                    ip_set_reference_statement={
+                                        "arn" : ip_set_regional.attr_arn
+                                    }
                                 )
                             )
                         ),
