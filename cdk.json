@@ -4,6 +4,23 @@
     "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": false,
     "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": false,
     "@aws-cdk/aws-rds:lowercaseDbIdentifier": false,
-    "@aws-cdk/core:stackRelativeExports": false
+    "@aws-cdk/core:stackRelativeExports": false,
+    "tooling_region": "eu-west-1",
+    "git_branch": "master",
+    "quality_gate": true,
+    "resource_prefix": "dataall",
+    "repository_source": "github",
+    "DeploymentEnvironments": [
+      {
+        "envname": "dev",
+        "account": "242437982258",
+        "region": "eu-west-1",
+        "with_approval": false,
+        "internet_facing": true,
+        "prod_sizing": false,
+        "enable_cw_rum":  true,
+        "enable_cw_canaries": true
+      }
+    ]
   }
 }
